@@ -1,7 +1,5 @@
 #!/bin/sh
 
-LLVM_DIR=/opt/homebrew/opt/llvm
-
 if [ $# -lt 3 ]; then
   echo "Usage.. ./test plugin_name test_file test_pass "
   echo "e.g. ./test TicToc.cpp TestTicTok.c tic-tok "
