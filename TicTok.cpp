@@ -1,4 +1,4 @@
-#include "DynamicCallCounter.h"
+#include "TicTokCounter.h"
 
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/Passes/PassBuilder.h"
@@ -25,9 +25,9 @@ Constant *CreateGlobalCounter(Module &M, StringRef GlobalVarName) {
 }
 
 //-----------------------------------------------------------------------------
-// DynamicCallCounter implementation
+// TicTokCounter implementation
 //-----------------------------------------------------------------------------
-bool DynamicCallCounter::runOnModule(Module &M) {
+bool TicTokCounter::runOnModule(Module &M) {
   bool Instrumented = false;
 
   // Function name <--> IR variable that holds the call counter
@@ -183,8 +183,8 @@ bool DynamicCallCounter::runOnModule(Module &M) {
   return true;
 }
 
-PreservedAnalyses DynamicCallCounter::run(llvm::Module &M,
-                                          llvm::ModuleAnalysisManager &) {
+PreservedAnalyses TicTokCounter::run(llvm::Module &M,
+                                     llvm::ModuleAnalysisManager &) {
   bool Changed = runOnModule(M);
 
   return (Changed ? llvm::PreservedAnalyses::none()
@@ -194,14 +194,14 @@ PreservedAnalyses DynamicCallCounter::run(llvm::Module &M,
 //-----------------------------------------------------------------------------
 // New PM Registration
 //-----------------------------------------------------------------------------
-llvm::PassPluginLibraryInfo getDynamicCallCounterPluginInfo() {
+llvm::PassPluginLibraryInfo getTicTokCounterPluginInfo() {
   return {LLVM_PLUGIN_API_VERSION, "tic-tok", LLVM_VERSION_STRING,
           [](PassBuilder &PB) {
             PB.registerPipelineParsingCallback(
                 [](StringRef Name, ModulePassManager &MPM,
                    ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "tic-tok") {
-                    MPM.addPass(DynamicCallCounter());
+                    MPM.addPass(TicTokCounter());
                     return true;
                   }
                   return false;
@@ -211,5 +211,5 @@ llvm::PassPluginLibraryInfo getDynamicCallCounterPluginInfo() {
 
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
-  return getDynamicCallCounterPluginInfo();
+  return getTicTokCounterPluginInfo();
 }

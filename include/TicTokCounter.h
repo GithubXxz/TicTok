@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------
 // New PM interface
 //------------------------------------------------------------------------------
-struct DynamicCallCounter : public llvm::PassInfoMixin<DynamicCallCounter> {
+struct TicTokCounter : public llvm::PassInfoMixin<TicTokCounter> {
   llvm::PreservedAnalyses run(llvm::Module &M, llvm::ModuleAnalysisManager &);
   bool runOnModule(llvm::Module &M);
 
